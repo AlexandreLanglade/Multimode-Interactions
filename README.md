@@ -5,3 +5,7 @@
 ```
 pip install ivy-python
 ```
+- pygame
+```
+pip install pygame
+```
