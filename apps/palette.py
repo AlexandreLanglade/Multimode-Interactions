@@ -1,7 +1,7 @@
 from ivy.ivy import IvyServer
-from random import randint
 import pygame
 import sys
+from math import tan
 
 class Palette(IvyServer):
 	def __init__(self):
@@ -14,28 +14,15 @@ class Palette(IvyServer):
 		print(" [ ", args[1], " | ", args[2], " | ", args[3], " | ", args[4], " | ", args[5], " | ", args[6], " ] ")
 		self.send_msg("ok")
 
-
-class Figure:
-
-	how_many = 0
-
-	def __init__(self, type, x=-1, y=-1, color=pygame.Color(225,133,104), size=1) -> None:
-		self.color = color
-		self.size = size
-		self.type = type # circle, rectangle or triangle
-		if(x==-1):
-			self.x = randint(10, WIN_SIZE_X-10)
-			self.y = randint(10, WIN_SIZE_Y-10)
-		else:
-			self.x = x
-			self.y = y	
-		self.how_many += 1
-		self.id = self.how_many
-
-
-
 WIN_SIZE_X = 700
 WIN_SIZE_Y = 400
+
+def triangle(x, y, size):
+	a = (x, y-size)
+	b = (x+((2*size)/tan(1.047197)), y+size)
+	c = (x-((2*size)/tan(1.047197)), y+size)
+	return (a,b,c)
+
 
 if __name__ == "__main__":
 	
@@ -51,5 +38,7 @@ if __name__ == "__main__":
 				palette.stop()
 				sys.exit()
 		screen.fill("#09133A")
+		r = pygame.Rect(200,200,30,30)
+		pygame.draw.rect(screen,pygame.Color(255,255,255),r)
 		pygame.display.update()
 		fps_clock.tick(30)
