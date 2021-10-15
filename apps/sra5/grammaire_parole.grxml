@@ -16,7 +16,6 @@
 		<item repeat="0-1"> <ruleref uri="#forme"/> <tag> out.forme = rules.forme </tag></item>
 		<item repeat="0-1"> <ruleref uri="#couleur"/> <tag> out.couleur = rules.couleur </tag></item>
 		<item repeat="0-1"> <ruleref uri="#localisation"/> <tag> out.localisation = rules.localisation</tag></item>
-		<ruleref special="GARBAGE"/>
 		
 		<tag> out = "action=" + out.action + " where=" + out.pointage + " form=" + out.forme + " color=" + out.couleur + " localisation=" + out.localisation </tag> 
 	</rule>
@@ -24,7 +23,7 @@
 	<rule id="action">
 		<tag> out = "none" </tag>
 		<one-of>
-			<item> créer <tag> out = "CREATE" </tag></item>
+			<item> creer <tag> out = "CREATE" </tag></item>
 			<item> dessiner <tag> out = "CREATE" </tag></item>
 			<item> tracer <tag> out = "CREATE" </tag></item>
 
@@ -66,7 +65,7 @@
 			<item> rouge <tag> out = "RED" </tag></item>
 			<item> orange <tag> out = "ORANGE" </tag></item>
 			<item> jaune <tag> out = "YELLOW" </tag></item>
-			<item> vert <tag> out = "GRREN" </tag></item>
+			<item> vert <tag> out = "GREEN" </tag></item>
 			<item> bleu <tag> out = "BLUE" </tag></item>
 			<item> violet <tag> out = "PURPLE" </tag></item>
 			<item> noir <tag> out = "DARK" </tag></item>

@@ -4,16 +4,40 @@ import palette
 import pygame
 import time
 
+
+class FusionInfo:
+	def __init__(self) -> None:
+		self.click_wait_form = 0
+		self.click_wait_color = 0
+		self.click_wait_position = 0
+		self.action = None
+		self.click_form = None
+		self.form = None
+		self.color = None
+		self.poited_color = None
+		self.position = None
+
+	def reset(self):
+		self.click_wait_form = 0
+		self.click_wait_color = 0
+		self.click_wait_position = 0
+		self.action = None
+		self.click_form = None
+		self.form = None
+		self.color = None
+		self.poited_color = None
+		self.position = None
+
 class FusionEngine(IvyServer):
 
 	list_figure = []
-	fusion = []
+	fusion_info = FusionInfo()
 
 	def __init__(self):
 		IvyServer.__init__(self, "FusionEngine")
 		self.start('127.255.255.255:2010')
-		#self.bind_msg(self.response, '^CLICK (.*)')
-		#self.bind_msg(self.response, 'parole')
+		self.bind_msg(self.receive_vocal, '^sra5 Parsed=action=(.*) where=(.*) form=(.*) color=(.*) pointedColor=(.*) localisation=(.*)')
+		self.bind_msg(self.receive_click, '^CLICK ([0-9]*) ([0-9]*)')
 		#self.bind_msg(self.response, 'geste')
 
 	def send_figures_to_palette(self):
@@ -46,9 +70,23 @@ class FusionEngine(IvyServer):
 		figures_under_target[0].x = new_x
 		figures_under_target[0].y = new_y
 		self.send_figures_to_palette()
+	
+	def receive_vocal(self, agent_name, action, where, form, color, pointed_color, localisation):
+		self.fusion_info.action = action
+		if where == "":
+			self.fusion_info.click_wait_form += 1
+		self.fusion_info.form = form
+		if pointed_color == "":
+			self.fusion_info.click_wait_color += 1
+		self.fusion_info.color = color
+		if localisation == "":
+			self.fusion_info.click_wait_position += 1
+		else:
+			print("Warning : No position declared !")
 
-	def reset(self):
-		self.fusion = []
+	def receive_click(self, agent_name, x, y):
+		pass
+
 
 
 class Figure:

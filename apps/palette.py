@@ -7,8 +7,7 @@ class Palette(IvyServer):
 	def __init__(self):
 		IvyServer.__init__(self,"Palette")
 		self.start('127.255.255.255:2010')
-		# MAJ id=0 type=rectangle x=765 y=546 color=blue size=3
-		self.bind_msg(self.update, '^MAJ id=([0-9]*) type=([a-z]*) x=([0-9]*) y=([0-9]*) color=([a-z]*) size=([0-9]*)')
+		self.bind_msg(self.update, '^DISPLAY (.*),([0-9]*),([0-9]*),([0-9]*),([0-9]*),([0-9]*),([0-9]*)')
 		
 	def update(self, *args):
 		print(" [ ", args[1], " | ", args[2], " | ", args[3], " | ", args[4], " | ", args[5], " | ", args[6], " ] ")
@@ -37,8 +36,17 @@ if __name__ == "__main__":
 				pygame.quit()
 				palette.stop()
 				sys.exit()
+			if(event.type == pygame.MOUSEBUTTONUP):
+				position = pygame.mouse.get_pos()
+				message = "CLICK " + str(position[0]) + " " + str(position[1])
+				palette.send_msg(message)
+		# Background
 		screen.fill("#09133A")
-		r = pygame.Rect(200,200,30,30)
-		pygame.draw.rect(screen,pygame.Color(255,255,255),r)
+		# Form Choice
+		pygame.draw.rect(screen,pygame.Color(255,255,255),pygame.Rect(10,20,60,30))
+		pygame.draw.circle(screen, pygame.Color(255,255,255),(38,80),22)
+		pygame.draw.polygon(screen,pygame.Color(255,255,255),triangle(38,130,22))
+		
+		# Display + fps
 		pygame.display.update()
 		fps_clock.tick(30)
