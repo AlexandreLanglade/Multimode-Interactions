@@ -59,9 +59,9 @@ if __name__ == "__main__":
 		# Background
 		screen.fill("#09133A")
 		# Form Choice
-		pygame.draw.rect(screen,pygame.Color(255,255,255),pygame.Rect(10,20,60,30))
-		pygame.draw.circle(screen, pygame.Color(255,255,255),(38,80),22)
-		pygame.draw.polygon(screen,pygame.Color(255,255,255),triangle(38,130,22))
+		#pygame.draw.rect(screen,pygame.Color(255,255,255),pygame.Rect(10,20,60,30))
+		#pygame.draw.circle(screen, pygame.Color(255,255,255),(38,80),22)
+		#pygame.draw.polygon(screen,pygame.Color(255,255,255),triangle(38,130,22))
 		palette.draw_list_figure()
 		
 		# Display + fps

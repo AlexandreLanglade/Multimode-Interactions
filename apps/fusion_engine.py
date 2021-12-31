@@ -75,6 +75,7 @@ class FusionEngine(IvyServer):
 	
 	def receive_vocal(self, agent_name, action, where, form, color, localisation, confidence):
 		self.fusion_info.add_speech(action, where, form, color, localisation)
+		self.fusion()
 
 	def receive_click(self, agent_name, x, y):
 		self.fusion_info.add_click(int(x),int(y))
@@ -82,6 +83,72 @@ class FusionEngine(IvyServer):
 	def receive_gesture(self, draw):
 		self.fusion_info.add_draw(draw)
 
+	def fusion(self):
+		if self.fusion_info.speech[0] == "CREATE":
+			if self.fusion_info.speech[2] == "undefined":
+				if self.fusion_info.speech[1] == "undefined":
+					self.fusion_rejected()
+					return
+				if self.fusion_info.draw != "":
+					if len(self.fusion_info.clicks) == 0:
+						coord = self.get_random_coord()
+					else:
+						coord = self.fusion_info.clicks[0]
+					color = self.get_color_value(self.fusion_info.speech[3])
+					self.add_figure(self.fusion_info.draw,coord[0],coord[1],color)
+				else:
+					if len(self.fusion_info.clicks) == 0:
+						self.fusion_rejected()
+						return
+					figures_under_target = []
+					for figure in self.list_figure:
+						if figure.is_inside(self.fusion_info.clicks[0][0], self.fusion_info.clicks[0][1]):
+							figures_under_target.append(figure)
+					if len(figures_under_target) == 0:
+						print("Warning : no figure pointed")
+						self.fusion_rejected()
+						return
+					type_fig = figures_under_target[0].type_figure
+					color = self.get_color_value(self.fusion_info.speech[3])
+					if len(self.fusion_info.clicks)>1:
+						coord = self.fusion_info.clicks[1]
+					else:
+						coord = self.get_random_coord()
+					self.add_figure(type_fig,coord[0],coord[1],color)
+			else:
+				if len(self.fusion_info.clicks)==0:
+					self.fusion_rejected()
+					return
+				color = self.get_color_value(self.fusion_info.speech[3])
+				self.add_figure(self.fusion_info.speech[2].lower(),self.fusion_info.clicks[0][0],self.fusion_info.clicks[0][1],color)
+		elif self.fusion_info.speech[0] == "MOVE":
+			pass
+		else:
+			self.fusion_rejected()
+			return
+		print(self.fusion_info)
+		self.fusion_info = FusionInfo()
+
+	def get_color_value(self, name):
+		match name:
+			case "YELLOW":
+				return pygame.Color(240, 222, 17)
+			case "GREEN":
+				return pygame.Color(17, 240, 111)
+			case "BLUE":
+				return pygame.Color(17, 240, 222)
+			case "RED":
+				return pygame.Color(240, 30, 17)
+			case _:
+				return pygame.Color(255, 255, 255)
+
+	def get_random_coord(self, XMAX=700, YMAX=400):
+		return (randint(0,700),randint(0,400))
+
+	def fusion_rejected(self):
+		print("[!]fusion rejected : ")
+		print(self.fusion_info)
+		self.fusion_info = FusionInfo()
 
 class Figure:
 
@@ -124,5 +191,6 @@ class Figure:
 if __name__ == "__main__":
 	fe = FusionEngine()
 	time.sleep(1)
-	fe.add_figure("circle", 234, 232, pygame.Color(23, 66, 76), 54)
-	fe.add_figure("rectangle", 234, 232, pygame.Color(23, 66, 76), 54)
+	fe.add_figure("circle", 38, 80, pygame.Color(255, 255, 255))
+	fe.add_figure("rectangle", 10, 20, pygame.Color(255, 255, 255))
+	fe.add_figure("triangle", 38, 130, pygame.Color(255, 255, 255))
