@@ -7,11 +7,13 @@ class Palette(IvyServer):
 	def __init__(self):
 		IvyServer.__init__(self,"Palette")
 		self.start('127.255.255.255:2010')
-		self.bind_msg(self.update, '^DISPLAY (.*),([0-9]*),([0-9]*),([0-9]*),([0-9]*),([0-9]*),([0-9]*)')
+		self.bind_msg(self.update, '^DISPLAY (.*)')
 		
-	def update(self, *args):
-		print(" [ ", args[1], " | ", args[2], " | ", args[3], " | ", args[4], " | ", args[5], " | ", args[6], " ] ")
-		self.send_msg("ok")
+	def update(self, agent_name, message:str):
+		list_figure = message.split()
+		for i in range(len(list_figure)):
+			list_figure[i]=list_figure[i].split(",")
+		print("UPDATE : ", list_figure)
 
 WIN_SIZE_X = 700
 WIN_SIZE_Y = 400

@@ -131,3 +131,4 @@ if __name__ == "__main__":
 	fe = FusionEngine()
 	time.sleep(1)
 	fe.add_figure("circle", 234, 232, pygame.Color(23, 66, 76), 54)
+	fe.add_figure("rectangle", 234, 232, pygame.Color(23, 66, 76), 54)
