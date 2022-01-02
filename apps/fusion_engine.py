@@ -22,6 +22,8 @@ class FusionInfo:
 		self.speech[4] = localisation
 
 	def add_draw(self, draw):
+		if draw == "cercle":
+			draw = "circle"
 		self.draw = draw
 
 	def __str__(self):
@@ -58,13 +60,10 @@ class FusionEngine(IvyServer):
 		self.list_figure.append(new_figure)
 		self.send_figures_to_palette()
 
-	def move_figure(self, type_figure, x, y, new_x, new_y, color=None):
+	def move_figure(self, x, y, new_x, new_y):
 		figures_under_target = []
 		for figure in self.list_figure:
-			if figure.is_inside(x, y) and type_figure == figure.type_figure:
-				if color != None and color == figure.color:
-					figures_under_target.append(figure)
-				elif color == None:
+			if figure.is_inside(x, y):
 					figures_under_target.append(figure)
 		if len(figures_under_target) == 0:
 			print("Warning : no figure matching the description")
@@ -80,7 +79,7 @@ class FusionEngine(IvyServer):
 	def receive_click(self, agent_name, x, y):
 		self.fusion_info.add_click(int(x),int(y))
 
-	def receive_gesture(self, draw):
+	def receive_gesture(self, agent_name, draw):
 		self.fusion_info.add_draw(draw)
 
 	def fusion(self):
@@ -122,7 +121,12 @@ class FusionEngine(IvyServer):
 				color = self.get_color_value(self.fusion_info.speech[3])
 				self.add_figure(self.fusion_info.speech[2].lower(),self.fusion_info.clicks[0][0],self.fusion_info.clicks[0][1],color)
 		elif self.fusion_info.speech[0] == "MOVE":
-			pass
+			if len(self.fusion_info.clicks)<2:
+				self.fusion_rejected()
+				return
+			old = self.fusion_info.clicks[0]
+			new = self.fusion_info.clicks[1]
+			self.move_figure(old[0],old[1],new[0],new[1])
 		else:
 			self.fusion_rejected()
 			return
@@ -165,9 +169,9 @@ class Figure:
 
 	def is_inside(self, x, y):
 		if self.type_figure == "circle":
-			return (x-self.x)*(x-self.x)+(y-self.y)*(y-self.y) <= self.size*self.size
+			return (x-self.x)*(x-self.x)+(y-self.y)*(y-self.y) <= 22*22
 		elif self.type_figure == "rectangle":
-			return x >= self.x - self.size and x <= self.x + self.size and y >= self.y - self.size/2 and y <= self.y + self.size/2
+			return x >= self.x and x <= self.x + 60 and y >= self.y and y <= self.y + 30
 		elif self.type_figure == "triangle":
 			triangle = palette.triangle(self.x, self.y, self.size)
 			a = self.scalar_product2D(self.vector_product2D(self.vector(triangle[0], triangle[1]), self.vector(
